@@ -7,10 +7,18 @@ from django.template.loader import render_to_string
 # from jinja2 import Template
 
 menu = ["О сайте", "Добавить статью", "Обратная связь", "Войти"]
-class Myclass:
-    def __init__(self, a, b):
-        self.a = a
-        self.b = b
+
+data_db = [
+    {'id': 1, 'title': 'Анджелина Джоли', 'content': 'Биография Анджелины Джоли', 'is_pablished': True},
+    {'id': 2, 'title': 'Марго Робби', 'content': 'Биография Марго Робби', 'is_pablished': False},
+    {'id': 3, 'title': 'Джулия Робертс', 'content': 'Биография Джулии Робертс', 'is_pablished': True}
+]
+# class Myclass:
+#     def __init__(self, a, b):
+#         self.a = a
+#         self.b = b
+
+
 
 
 def index(request):
@@ -20,12 +28,13 @@ def index(request):
         'title': 'главная страница!?',
         # 'main_title': 'title',
         'menu': menu,
-        'float': 28.56,
-        'lst': [1, 2, 'abc', True],
-        'set': {1, 2, 3, 2, 5},
-        'dict': {'key_1': 'value_1', 'key_2': 'value_2'},
-        'obj': Myclass(10, 20),
-        'url': slugify("The Main Page")
+        'posts': data_db
+        # 'float': 28.56,
+        # 'lst': [1, 2, 'abc', True],
+        # 'set': {1, 2, 3, 2, 5},
+        # 'dict': {'key_1': 'value_1', 'key_2': 'value_2'},
+        # 'obj': Myclass(10, 20),
+        # 'url': slugify("The Main Page")
     }
     return render(request, 'women/index.html', context=data)
 
