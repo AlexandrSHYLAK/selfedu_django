@@ -24,6 +24,8 @@ SECRET_KEY = 'django-insecure-ao)tsmf4m(e5=hdq1&7feh*y)+&!gr3if8&(lb#%r_00ih#@-u
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+# если DEBUG = False то сервер запускается командой python manage.py runserver --insecure
+#на реальном веб-сервере, все статические файлы собираются в единый каталог, как правило, с именем static с помощью команды:
 
 ALLOWED_HOSTS = ['127.0.0.1']
 
@@ -118,6 +120,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
