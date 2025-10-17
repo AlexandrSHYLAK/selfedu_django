@@ -6,10 +6,18 @@
 <!--    <title>{{ main_title|default:"Без заголовка" }}</title>-->
 </head>
 <body>
+<ul>
+    <li><a href="{% url 'home' %}">Главная страница</a></li>
+    {% for m in menu %}
+    {% if not forloop.last %}<li>{% else %}<li class="last">{% endif %}
+        <a href="{% url m.url_name %}">{{ m.title }}</a>
+    </li>
+    {% endfor %}
+</ul>
 <!--<p>{{ menu }}</p>-->
 <!--<p>{{ menu|first }}</p>-->
 <!--<p>{{ menu|last }}</p>-->
-<p>{{ menu|join:" | " }}</p>
+<!--<p>{{ menu|join:" | " }}</p>-->
 <!--<p>{{ float|add:"50"}}</p>-->
 <!--<p>{{ lst }}</p>-->
 <!--<p>{{ lst|length }}</p>-->
@@ -28,6 +36,8 @@
     <li>
         <h2>{{ p.title }}</h2>
         <p>{{ p.content }}</p>
+<!--        <p><a href="post/{{ p.id }}">Читать пост</a></p>-->
+        <p><a href="{% url 'post' p.id %}">Читать пост</a></p>
         {% if not forloop.last %}
         <hr>
         {% endif %}
