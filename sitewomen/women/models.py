@@ -45,7 +45,7 @@ class Women(models.Model):
     slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name="Slug",
                             validators=[
                                 MinLengthValidator(5, message="Минимум 5 символов"),
-                                MaxLengthValidator(100, message="Максимум 100 символов"),
+                             MaxLengthValidator(100, message="Максимум 100 символов"),
                             ])
     photo = models.ImageField(upload_to="photos/%Y/%m/%d", default=None,
                               blank=True, null=True, verbose_name="Фото")
