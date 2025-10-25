@@ -74,3 +74,6 @@ class AddPostForm(forms.ModelForm):
     #
     #     if not (set(title) <= set(ALLOWED_CHARS)):
     #         raise ValidationError("Должны присутствовать только русские символы, дефис и пробел.")
+
+class UploadFileForm(forms.Form):
+    file = forms.ImageField(label="Файл")
