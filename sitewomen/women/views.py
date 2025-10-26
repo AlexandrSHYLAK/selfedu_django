@@ -5,7 +5,7 @@ from django.urls import reverse, reverse_lazy
 from django.template.loader import render_to_string
 from django.template.defaultfilters import slugify
 from django.views import View
-from django.views.generic import TemplateView, ListView, DetailView, FormView
+from django.views.generic import TemplateView, ListView, DetailView, FormView, CreateView, UpdateView
 
 from .forms import AddPostForm, UploadFileForm
 from .models import Women, Category, TagPost, UploadFiles
@@ -134,17 +134,39 @@ class ShowPost(DetailView):
 #
 #     return render(request, 'women/addpage.html', data)
 
-class AddPage(FormView):
+class AddPage(CreateView):
+    # model = Women
+    # fields = '__all__'
+    # fields = ['title', 'slug', 'content', 'is_published', 'cat']
     form_class = AddPostForm
     template_name = 'women/addpage.html'
-    success_url = reverse_lazy('home')
+    # success_url = reverse_lazy('home')
     extra_context = {
         'title': 'Добавление статьи',
         'menu': menu,
     }
-    def form_valid(self, form):
-        form.save()
-        return super().form_valid(form)
+
+class UpdatePage(UpdateView):
+    model =Women
+    fields = ['title', 'slug', 'content', 'photo', 'is_published', 'cat']
+    template_name = 'women/addpage.html'
+    success_url = reverse_lazy('home')
+    extra_context = {
+        'title': 'Редактировани статьи',
+        'menu': menu,
+    }
+
+# class AddPage(FormView):
+#     form_class = AddPostForm
+#     template_name = 'women/addpage.html'
+#     success_url = reverse_lazy('home')
+#     extra_context = {
+#         'title': 'Добавление статьи',
+#         'menu': menu,
+#     }
+#     def form_valid(self, form):
+#         form.save()
+#         return super().form_valid(form)
 
 # class AddPage(View):
 #     def get(self, request):
