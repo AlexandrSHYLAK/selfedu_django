@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.http import HttpResponse, HttpResponseNotFound, Http404, HttpResponseRedirect, HttpResponsePermanentRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.context_processors import request
@@ -5,7 +6,7 @@ from django.urls import reverse, reverse_lazy
 from django.template.loader import render_to_string
 from django.template.defaultfilters import slugify
 from django.views import View
-from django.views.generic import TemplateView, ListView, DetailView, FormView, CreateView, UpdateView
+from django.views.generic import TemplateView, ListView, DetailView, FormView, CreateView, UpdateView, DeleteView
 
 from .forms import AddPostForm, UploadFileForm
 from .models import Women, Category, TagPost, UploadFiles
@@ -155,6 +156,20 @@ class UpdatePage(UpdateView):
         'title': 'Редактировани статьи',
         'menu': menu,
     }
+
+class DeletePage(DeleteView):
+    model = Women
+    fields = ['title', 'slug', 'content', 'photo', 'is_published', 'cat']
+    template_name = 'women/delete_page.html'
+    success_url = reverse_lazy('home')
+    extra_context = {
+        'title': 'Удаление статьи',
+        'menu': menu,
+    }
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Статья была успешно удалена.')
+        return super().form_valid(form)
 
 # class AddPage(FormView):
 #     form_class = AddPostForm
