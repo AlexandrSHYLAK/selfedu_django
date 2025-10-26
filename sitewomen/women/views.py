@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.template.loader import render_to_string
 from django.template.defaultfilters import slugify
 from django.views import View
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, ListView
 
 from .forms import AddPostForm, UploadFileForm
 from .models import Women, Category, TagPost, UploadFiles
@@ -32,26 +32,30 @@ menu = [{'title': "О сайте", 'url_name': 'about'},
 # ]
 
 
-def index(request):
-    # posts = Women.objects.filter(is_published=1)
-    posts = Women.published.all().select_related('cat')
-    data = {
-        'title': 'Главная страница',
-        'menu': menu,
-        'posts': posts,
-        'cat_selected': 0,
-    }
-    return render(request, 'women/index.html', context=data)
+# def index(request):
+#     # posts = Women.objects.filter(is_published=1)
+#     posts = Women.published.all().select_related('cat')
+#     data = {
+#         'title': 'Главная страница',
+#         'menu': menu,
+#         'posts': posts,
+#         'cat_selected': 0,
+#     }
+#     return render(request, 'women/index.html', context=data)
 
 
-class WomenHome(TemplateView):
+class WomenHome(ListView):
+    # model = Women
     template_name = 'women/index.html'
+    context_object_name = 'posts'
     extra_context = {
         'title': 'Главная страница',
         'menu': menu,
-        'posts': Women.published.all().select_related('cat'),
         'cat_selected': 0,
     }
+    def get_queryset(self):
+        return Women.published.all().select_related('cat')
+
     # def get_context_data(self, **kwargs):
     #     context = super().get_context_data(**kwargs)
     #     context['title'] = 'Главная страница'
@@ -91,28 +95,28 @@ def show_post(request, post_slug):
     return render(request, 'women/post.html', data)
 
 
-def addpage(request):
-    if request.method == "POST":
-        form = AddPostForm(request.POST, request.FILES)
-        if form.is_valid():
-            # # print(form.cleaned_data)
-            # try:
-            #     Women.objects.create(**form.cleaned_data)
-            #     return redirect('home')
-            # except:
-            #     form.add_error(None, "Ошибка добавления поста")
-            form.save()
-            return redirect('home')
-    else:
-        form = AddPostForm()
-
-    data = {
-        'menu': menu,
-        'title': "Добавление статьи",
-        'form': form
-    }
-
-    return render(request, 'women/addpage.html', data)
+# def addpage(request):
+#     if request.method == "POST":
+#         form = AddPostForm(request.POST, request.FILES)
+#         if form.is_valid():
+#             # # print(form.cleaned_data)
+#             # try:
+#             #     Women.objects.create(**form.cleaned_data)
+#             #     return redirect('home')
+#             # except:
+#             #     form.add_error(None, "Ошибка добавления поста")
+#             form.save()
+#             return redirect('home')
+#     else:
+#         form = AddPostForm()
+#
+#     data = {
+#         'menu': menu,
+#         'title': "Добавление статьи",
+#         'form': form
+#     }
+#
+#     return render(request, 'women/addpage.html', data)
 
 
 class AddPage(View):
@@ -156,6 +160,23 @@ def show_category(request, cat_slug):
         'cat_selected': category.pk,
     }
     return render(request, 'women/index.html', context=data)
+
+class WomenCategory(ListView):
+    template_name = 'women/index.html'
+    context_object_name = 'posts'
+    allow_empty = False
+
+    def get_queryset(self):
+        return Women.published.filter(cat__slug=self.kwargs['cat_slug']).select_related("cat")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        cat = context['posts'][0].cat
+        context['title'] = 'Категория - ' + cat.name
+        context['menu'] = menu
+        context['posts'] = Women.published.all().select_related('cat')
+        context['cat_selected'] = cat.pk
+        return context
 
 
 def page_not_found(request, exception):
